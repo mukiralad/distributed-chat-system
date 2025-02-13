@@ -1,6 +1,7 @@
 import socket
 import threading
 
+
 class ChatClient:
     def __init__(self, host='127.0.0.1', port=9999):
         self.host = host
@@ -19,7 +20,7 @@ class ChatClient:
                     self.client.send(self.nickname.encode('ascii'))
                 else:
                     print(message)
-            except:
+            except Exception:
                 print("An error occurred!")
                 self.client.close()
                 break
@@ -35,6 +36,7 @@ class ChatClient:
 
         write_thread = threading.Thread(target=self.write)
         write_thread.start()
+
 
 if __name__ == "__main__":
     ChatClient().run()

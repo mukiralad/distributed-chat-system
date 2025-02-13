@@ -1,6 +1,7 @@
 import socket
 import threading
 
+
 class ChatServer:
     def __init__(self, host='127.0.0.1', port=9999):
         self.host = host
@@ -26,7 +27,8 @@ class ChatServer:
                     if message.startswith('/join '):
                         new_room = message[6:]
                         if new_room in self.rooms:
-                            self.rooms[room].remove(client)
+                            room_clients = self.rooms[room]
+                            room_clients.remove(client)
                             room = new_room
                             self.rooms[room].append(client)
                             client.send(f'Joined room {room}'.encode('ascii'))
@@ -38,15 +40,18 @@ class ChatServer:
                             self.rooms[new_room] = [client]
                             self.rooms[room].remove(client)
                             room = new_room
-                            client.send(f'Created and joined room {room}'.encode('ascii'))
+                            msg = f'Created and joined room {room}'
+                            message = msg.encode('ascii')
+                            client.send(message)
                         else:
                             client.send('Room already exists'.encode('ascii'))
                     else:
                         client.send('Invalid command'.encode('ascii'))
                 else:
-                    self.broadcast(f'{nickname}: {message}'.encode('ascii'), room)
+                    msg = f'{nickname}: {message}'.encode('ascii')
+                    self.broadcast(msg, room)
 
-            except:
+            except Exception:
                 index = self.clients.index(client)
                 self.clients.remove(client)
                 client.close()
@@ -70,12 +75,16 @@ class ChatServer:
             self.broadcast(f'{nickname} joined the chat!'.encode('ascii'))
             client.send('Connected to the server!'.encode('ascii'))
 
-            thread = threading.Thread(target=self.handle, args=(client, nickname))
+            thread = threading.Thread(
+                target=self.handle,
+                args=(client, nickname)
+            )
             thread.start()
 
     def run(self):
         print("Server Started!")
         self.receive()
+
 
 if __name__ == "__main__":
     ChatServer().run()
