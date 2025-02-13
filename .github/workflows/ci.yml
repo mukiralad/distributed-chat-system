@@ -29,3 +29,14 @@ jobs:
 
       - name: Run unit tests
         run: python -m unittest discover tests/
+      
+      - name: Create Release (Simulated Deployment)
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          release_name: Distributed Chat System Release ${{ github.run_number }}
+          body: |
+            This is an automated release created by CI/CD.
+
