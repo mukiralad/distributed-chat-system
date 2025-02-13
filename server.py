@@ -10,16 +10,42 @@ class ChatServer:
         self.server.listen()
         self.clients = []
         self.nicknames = []
+        self.rooms = {'general': []}  # Dictionary of chat rooms
 
-    def broadcast(self, message):
-        for client in self.clients:
+    def broadcast(self, message, room='general'):
+        for client in self.rooms[room]:
             client.send(message)
 
-    def handle(self, client):
+    def handle(self, client, nickname):
+        room = 'general'
         while True:
             try:
-                message = client.recv(1024)
-                self.broadcast(message)
+                message = client.recv(1024).decode('ascii')
+
+                if message.startswith('/'):
+                    if message.startswith('/join '):
+                        new_room = message[6:]
+                        if new_room in self.rooms:
+                            self.rooms[room].remove(client)
+                            room = new_room
+                            self.rooms[room].append(client)
+                            client.send(f'Joined room {room}'.encode('ascii'))
+                        else:
+                            client.send('Room does not exist'.encode('ascii'))
+                    elif message.startswith('/create '):
+                        new_room = message[8:]
+                        if new_room not in self.rooms:
+                            self.rooms[new_room] = [client]
+                            self.rooms[room].remove(client)
+                            room = new_room
+                            client.send(f'Created and joined room {room}'.encode('ascii'))
+                        else:
+                            client.send('Room already exists'.encode('ascii'))
+                    else:
+                        client.send('Invalid command'.encode('ascii'))
+                else:
+                    self.broadcast(f'{nickname}: {message}'.encode('ascii'), room)
+
             except:
                 index = self.clients.index(client)
                 self.clients.remove(client)
@@ -38,12 +64,13 @@ class ChatServer:
             nickname = client.recv(1024).decode('ascii')
             self.nicknames.append(nickname)
             self.clients.append(client)
+            self.rooms['general'].append(client)
 
             print(f'Nickname of the client is {nickname}!')
             self.broadcast(f'{nickname} joined the chat!'.encode('ascii'))
             client.send('Connected to the server!'.encode('ascii'))
 
-            thread = threading.Thread(target=self.handle, args=(client,))
+            thread = threading.Thread(target=self.handle, args=(client, nickname))
             thread.start()
 
     def run(self):
