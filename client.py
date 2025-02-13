@@ -26,7 +26,7 @@ class ChatClient:
 
     def write(self):
         while True:
-            message = f'{self.nickname}: {input("")}'
+            message = input("")
             self.client.send(message.encode('ascii'))
 
     def run(self):
