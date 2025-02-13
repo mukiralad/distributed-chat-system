@@ -64,3 +64,20 @@ A distributed chat system built using sockets for real-time communication betwee
 -   To run multiple clients, open multiple terminal windows and run `python client.py` in each.
 -   Clients start in the "general" chat room by default.
 
+## Continuous Integration / Continuous Deployment
+
+This project uses GitHub Actions for CI/CD:
+
+- **Linting:** Ensures code quality using `flake8`.
+- **Unit Testing:** Runs automated tests using Python's `unittest`.
+- **Simulated Deployment:** Creates an automated release on every successful pipeline run.
+
+### How It Works
+
+1. On every push or pull request, GitHub Actions runs the following steps:
+    - Checks out the code.
+    - Sets up Python.
+    - Installs dependencies (`flake8`, etc.).
+    - Runs linting (`flake8`) and unit tests (`unittest`).
+2. If all checks pass, an automated release is created (optional).
+
