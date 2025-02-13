@@ -8,6 +8,7 @@ A distributed chat system built using sockets for real-time communication betwee
 -   Simple socket-based communication for scalability.
 -   Lightweight and easy to deploy.
 -   Basic nickname handling.
+-   Chat Room functionality: Create and join different chat rooms.
 
 ## Getting Started
 
@@ -37,9 +38,7 @@ A distributed chat system built using sockets for real-time communication betwee
     ```
     python server.py
     ```
-
-    (No need to navigate to a server subdirectory, as everything is located in root)
-
+    
 ### Running the Client
 
 1.  Open a new terminal window.
@@ -53,10 +52,15 @@ A distributed chat system built using sockets for real-time communication betwee
 
 -   Start the server first.
 -   Run multiple clients to join the chat.
--   Enter messages in the client terminal to send to other users.
+
+### Chat Room Commands
+
+-   `/create <roomname>`: Creates a new chat room with the specified name and automatically joins it.
+-   `/join <roomname>`: Joins an existing chat room with the specified name.
 
 ## Notes
 
--   The server listens on host `127.0.0.1` (localhost) and port `9999` by default.  This can be modified in the `server.py` and `client.py` files.
+-   The server listens on host `127.0.0.1` (localhost) and port `9999` by default. This can be modified in the `server.py` and `client.py` files.
 -   To run multiple clients, open multiple terminal windows and run `python client.py` in each.
+-   Clients start in the "general" chat room by default.
 
